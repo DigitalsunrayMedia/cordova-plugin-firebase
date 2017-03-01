@@ -5,7 +5,6 @@ import android.content.Intent;
 import android.util.Base64;
 import android.util.Log;
 import android.os.Bundle;
-import android.content.Context;
 import android.content.SharedPreferences;
 
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -27,7 +26,6 @@ import com.google.firebase.iid.FirebaseInstanceId;
 import com.google.firebase.analytics.FirebaseAnalytics;
 import com.google.firebase.messaging.FirebaseMessaging;
 
-import java.lang.ref.WeakReference;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
@@ -432,7 +430,11 @@ public class FirebasePlugin extends CordovaPlugin {
                             : FirebaseRemoteConfig.getInstance().getByteArray(key, namespace);
                     JSONObject object = new JSONObject();
                     object.put("base64", Base64.encodeToString(bytes, Base64.DEFAULT));
-                    object.put("array", new JSONArray(bytes));
+                    JSONArray arr = new JSONArray();
+                    for (byte aByte : bytes) {
+                        arr.put(aByte);
+                    }
+                    object.put("array", arr);
                     callbackContext.success(object);
                 } catch (Exception e) {
                     callbackContext.error(e.getMessage());
