@@ -15,6 +15,10 @@
 #define NSFoundationVersionNumber_iOS_9_x_Max 1299
 #endif
 
+@interface FirebasePlugin ()
+@property (nonatomic, strong) CDVInvokedUrlCommand *grantPermissionCommand;
+@end
+
 @implementation FirebasePlugin
 
 @synthesize notificationCallbackId;
@@ -37,14 +41,22 @@ static FirebasePlugin *firebasePlugin;
 
 - (void)didRegisterForRemoteNotificationsWithDeviceToken:(NSNotification*)notifcation
 {
+    if (!self.grantPermissionCommand) {
+        return;
+    }
+    
     CDVPluginResult *pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK];
-    [self.commandDelegate sendPluginResult:pluginResult callbackId:command.callbackId];
+    [self.commandDelegate sendPluginResult:pluginResult callbackId:self.grantPermissionCommand.callbackId];
 }
 
 - (void)didFailToRegisterForRemoteNotificationsWithError:(NSNotification*)notifcation
 {
+    if (!self.grantPermissionCommand) {
+        return;
+    }
+    
     CDVPluginResult *pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_ERROR];
-    [self.commandDelegate sendPluginResult:pluginResult callbackId:command.callbackId];
+    [self.commandDelegate sendPluginResult:pluginResult callbackId:self.grantPermissionCommand.callbackId];
 }
 
 // DEPRECATED - alias of getToken
@@ -85,6 +97,7 @@ static FirebasePlugin *firebasePlugin;
 }
 - (void)grantPermission:(CDVInvokedUrlCommand *)command {
     if (floor(NSFoundationVersionNumber) <= NSFoundationVersionNumber_iOS_9_x_Max) {
+        self.grantPermissionCommand = command;
         if ([[UIApplication sharedApplication]respondsToSelector:@selector(registerUserNotificationSettings:)]) {
             UIUserNotificationType notificationTypes =
             (UIUserNotificationTypeSound | UIUserNotificationTypeAlert | UIUserNotificationTypeBadge);
