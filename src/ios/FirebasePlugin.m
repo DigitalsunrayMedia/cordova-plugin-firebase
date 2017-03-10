@@ -30,7 +30,21 @@ static FirebasePlugin *firebasePlugin;
 
 - (void)pluginInitialize {
     NSLog(@"Starting Firebase plugin");
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(didRegisterForRemoteNotificationsWithDeviceToken:) name:@"registerForRemoteNotifications_OK" object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(didFailToRegisterForRemoteNotificationsWithError:) name:@"registerForRemoteNotifications_ERROR" object:nil];
     firebasePlugin = self;
+}
+
+- (void)didRegisterForRemoteNotificationsWithDeviceToken:(NSNotification*)notifcation
+{
+    CDVPluginResult *pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK];
+    [self.commandDelegate sendPluginResult:pluginResult callbackId:command.callbackId];
+}
+
+- (void)didFailToRegisterForRemoteNotificationsWithError:(NSNotification*)notifcation
+{
+    CDVPluginResult *pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_ERROR];
+    [self.commandDelegate sendPluginResult:pluginResult callbackId:command.callbackId];
 }
 
 // DEPRECATED - alias of getToken
@@ -93,6 +107,17 @@ static FirebasePlugin *firebasePlugin;
         [[UNUserNotificationCenter currentNotificationCenter]
           requestAuthorizationWithOptions:authOptions
           completionHandler:^(BOOL granted, NSError * _Nullable error) {
+              CDVPluginResult *pluginResult;
+              if (granted && !error)
+              {
+                  pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK];
+              }
+              else
+              {
+                  pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_ERROR];
+              }
+              
+              [self.commandDelegate sendPluginResult:pluginResult callbackId:command.callbackId];
           }
         ];
         [[UNUserNotificationCenter currentNotificationCenter] setDelegate:self];
@@ -101,9 +126,6 @@ static FirebasePlugin *firebasePlugin;
 
         [[UIApplication sharedApplication] registerForRemoteNotifications];
     }
-
-    CDVPluginResult *pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK];
-    [self.commandDelegate sendPluginResult:pluginResult callbackId:command.callbackId];
 }
 
 - (void)setBadgeNumber:(CDVInvokedUrlCommand *)command {
