@@ -43,6 +43,22 @@
     
     self.applicationInBackground = @(YES);
     
+    
+    // detect if app was launched with a notification tap
+    // https://stackoverflow.com/a/21611009
+    NSDictionary *notification = [launchOptions objectForKey:UIApplicationLaunchOptionsRemoteNotificationKey];
+    if (notification) {
+        NSLog(@"app recieved notification from remote%@",notification);
+        // https://stackoverflow.com/a/16393957
+        if ( application.applicationState == UIApplicationStateInactive || application.applicationState == UIApplicationStateBackground  )
+        {
+            //opened from a push notification when the app was on background
+            FirebasePlugin.hasUserTappedOnNotification = YES;
+        }
+    }else{
+        NSLog(@"app did not recieve notification");
+    }
+    
     return YES;
 }
 
@@ -83,6 +99,13 @@
 }
 
 - (void)application:(UIApplication *)application didReceiveRemoteNotification:(NSDictionary *)userInfo {
+    // https://stackoverflow.com/a/16393957
+    if ( application.applicationState == UIApplicationStateInactive || application.applicationState == UIApplicationStateBackground  )
+    {
+        //opened from a push notification when the app was on background
+        FirebasePlugin.hasUserTappedOnNotification = YES;
+    }
+    
     NSDictionary *mutableUserInfo = [userInfo mutableCopy];
     
     [mutableUserInfo setValue:self.applicationInBackground forKey:@"tap"];
@@ -95,6 +118,13 @@
 
 - (void)application:(UIApplication *)application didReceiveRemoteNotification:(NSDictionary *)userInfo
     fetchCompletionHandler:(void (^)(UIBackgroundFetchResult))completionHandler {
+    
+    // https://stackoverflow.com/a/16393957
+    if ( application.applicationState == UIApplicationStateInactive || application.applicationState == UIApplicationStateBackground  )
+    {
+        //opened from a push notification when the app was on background
+        FirebasePlugin.hasUserTappedOnNotification = YES;
+    }
 
     NSDictionary *mutableUserInfo = [userInfo mutableCopy];
     

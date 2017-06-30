@@ -77,6 +77,24 @@ static FirebasePlugin *firebasePlugin;
 
     [self.commandDelegate sendPluginResult:pluginResult callbackId:command.callbackId];
 }
+
+- (void)hasUserTappedOnNotification:(CDVInvokedUrlCommand*)command
+{
+    CDVPluginResult *pluginResult;
+    
+    NSDictionary *resultDict = [[NSDictionary alloc] initWithObjectsAndKeys:[NSString stringWithFormat:@"%@", (self.hasUserTappedOnNotification ? @"true" : @"false")], @"hasUserTappedOnNotification", nil];
+    NSError *error;
+    NSData *jsonData = [NSJSONSerialization dataWithJSONObject:resultDict options:NSJSONWritingPrettyPrinted error:&error];
+    
+    if (!error && jsonData) {
+        NSString *jsonString = [[NSString alloc] initWithData:jsonData encoding:NSUTF8StringEncoding];
+        
+        pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK messageAsString:jsonString];
+        
+        [self.commandDelegate sendPluginResult:pluginResult callbackId:command.callbackId];
+    }
+}
+
 - (void)hasPermission:(CDVInvokedUrlCommand *)command
 {
     BOOL enabled = NO;

@@ -8,6 +8,10 @@ exports.getToken = function(success, error) {
     exec(success, error, "FirebasePlugin", "getToken", []);
 };
 
+exports.hasUserTappedOnNotification = function(success, error) {
+    exec(success, error, "FirebasePlugin", "hasUserTappedOnNotification", []);
+};
+
 exports.onNotificationOpen = function(success, error) {
     exec(success, error, "FirebasePlugin", "onNotificationOpen", []);
 };

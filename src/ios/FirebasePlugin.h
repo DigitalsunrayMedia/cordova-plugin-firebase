@@ -5,6 +5,7 @@
 + (FirebasePlugin *) firebasePlugin;
 - (void)getInstanceId:(CDVInvokedUrlCommand*)command;
 - (void)getToken:(CDVInvokedUrlCommand*)command;
+- (void)hasUserTappedOnNotification:(CDVInvokedUrlCommand*)command;
 - (void)grantPermission:(CDVInvokedUrlCommand*)command;
 - (void)hasPermission:(CDVInvokedUrlCommand*)command;
 - (void)setBadgeNumber:(CDVInvokedUrlCommand*)command;
@@ -24,5 +25,6 @@
 @property (nonatomic, copy) NSString *notificationCallbackId;
 @property (nonatomic, copy) NSString *tokenRefreshCallbackId;
 @property (nonatomic, retain) NSMutableArray *notificationStack;
+@property (nonatomic, assign) BOOL hasUserTappedOnNotification;
 
 @end
