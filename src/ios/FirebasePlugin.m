@@ -24,6 +24,7 @@
 @synthesize notificationCallbackId;
 @synthesize tokenRefreshCallbackId;
 @synthesize notificationStack;
+@synthesize hasUserTappedOnNotification;
 
 static NSInteger const kNotificationStackSize = 10;
 static FirebasePlugin *firebasePlugin;
@@ -62,19 +63,19 @@ static FirebasePlugin *firebasePlugin;
 // DEPRECATED - alias of getToken
 - (void)getInstanceId:(CDVInvokedUrlCommand *)command {
     CDVPluginResult *pluginResult;
-
+    
     pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK messageAsString:
                     [[FIRInstanceID instanceID] token]];
-
+    
     [self.commandDelegate sendPluginResult:pluginResult callbackId:command.callbackId];
 }
 
 - (void)getToken:(CDVInvokedUrlCommand *)command {
     CDVPluginResult *pluginResult;
-
+    
     pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK messageAsString:
                     [[FIRInstanceID instanceID] token]];
-
+    
     [self.commandDelegate sendPluginResult:pluginResult callbackId:command.callbackId];
 }
 
@@ -123,48 +124,48 @@ static FirebasePlugin *firebasePlugin;
             [[UIApplication sharedApplication] registerUserNotificationSettings:settings];
             [[UIApplication sharedApplication] registerForRemoteNotifications];
         } else {
-            #pragma GCC diagnostic push
-            #pragma GCC diagnostic ignored "-Wdeprecated-declarations"
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wdeprecated-declarations"
             [[UIApplication sharedApplication] registerForRemoteNotificationTypes:(UIRemoteNotificationTypeAlert | UIRemoteNotificationTypeBadge | UIRemoteNotificationTypeSound)];
-            #pragma GCC diagnostic pop
+#pragma GCC diagnostic pop
         }
     } else {
-        #if defined(__IPHONE_10_0) && __IPHONE_OS_VERSION_MAX_ALLOWED >= __IPHONE_10_0
+#if defined(__IPHONE_10_0) && __IPHONE_OS_VERSION_MAX_ALLOWED >= __IPHONE_10_0
         // IOS 10
         UNAuthorizationOptions authOptions =
-          UNAuthorizationOptionAlert
-          | UNAuthorizationOptionSound
-          | UNAuthorizationOptionBadge;
+        UNAuthorizationOptionAlert
+        | UNAuthorizationOptionSound
+        | UNAuthorizationOptionBadge;
         [[UNUserNotificationCenter currentNotificationCenter]
-          requestAuthorizationWithOptions:authOptions
-          completionHandler:^(BOOL granted, NSError * _Nullable error) {
-              CDVPluginResult *pluginResult;
-              if (granted && !error)
-              {
-                  pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK];
-              }
-              else
-              {
-                  pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_ERROR];
-              }
-              
-              [self.commandDelegate sendPluginResult:pluginResult callbackId:command.callbackId];
-          }
-        ];
+         requestAuthorizationWithOptions:authOptions
+         completionHandler:^(BOOL granted, NSError * _Nullable error) {
+             CDVPluginResult *pluginResult;
+             if (granted && !error)
+             {
+                 pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK];
+             }
+             else
+             {
+                 pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_ERROR];
+             }
+             
+             [self.commandDelegate sendPluginResult:pluginResult callbackId:command.callbackId];
+         }
+         ];
         [[UNUserNotificationCenter currentNotificationCenter] setDelegate:self];
         [[FIRMessaging messaging] setRemoteMessageDelegate:self];
-        #endif
-
+#endif
+        
         [[UIApplication sharedApplication] registerForRemoteNotifications];
     }
 }
 
 - (void)setBadgeNumber:(CDVInvokedUrlCommand *)command {
     int number = [[command.arguments objectAtIndex:0] intValue];
-
+    
     [self.commandDelegate runInBackground:^{
         [[UIApplication sharedApplication] setApplicationIconBadgeNumber:number];
-
+        
         CDVPluginResult *pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK];
         [self.commandDelegate sendPluginResult:pluginResult callbackId:command.callbackId];
     }];
@@ -173,7 +174,7 @@ static FirebasePlugin *firebasePlugin;
 - (void)getBadgeNumber:(CDVInvokedUrlCommand *)command {
     [self.commandDelegate runInBackground:^{
         long badge = [[UIApplication sharedApplication] applicationIconBadgeNumber];
-
+        
         CDVPluginResult *pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK messageAsDouble:badge];
         [self.commandDelegate sendPluginResult:pluginResult callbackId:command.callbackId];
     }];
@@ -199,7 +200,7 @@ static FirebasePlugin *firebasePlugin;
 
 - (void)onNotificationOpen:(CDVInvokedUrlCommand *)command {
     self.notificationCallbackId = command.callbackId;
-
+    
     if (self.notificationStack != nil && [self.notificationStack count]) {
         for (NSDictionary *userInfo in self.notificationStack) {
             [self sendNotification:userInfo];
@@ -228,7 +229,7 @@ static FirebasePlugin *firebasePlugin;
         
         // stack notifications until a callback has been registered
         [self.notificationStack addObject:userInfo];
-
+        
         if ([self.notificationStack count] >= kNotificationStackSize) {
             [self.notificationStack removeLastObject];
         }
@@ -287,23 +288,23 @@ static FirebasePlugin *firebasePlugin;
                 [self.commandDelegate sendPluginResult:pluginResult callbackId:command.callbackId];
             }
         }];
-
+        
     }];
 }
 
 - (void)activateFetched:(CDVInvokedUrlCommand *)command {
-     [self.commandDelegate runInBackground:^{
+    [self.commandDelegate runInBackground:^{
         FIRRemoteConfig* remoteConfig = [FIRRemoteConfig remoteConfig];
-         BOOL activated = [remoteConfig activateFetched];
-         CDVPluginResult *pluginResult;
-         if (activated) {
-             pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK];
-         } else {
-             pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_ERROR];
-         }
-         
-         [self.commandDelegate sendPluginResult:pluginResult callbackId:command.callbackId];
-     }];
+        BOOL activated = [remoteConfig activateFetched];
+        CDVPluginResult *pluginResult;
+        if (activated) {
+            pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK];
+        } else {
+            pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_ERROR];
+        }
+        
+        [self.commandDelegate sendPluginResult:pluginResult callbackId:command.callbackId];
+    }];
 }
 
 - (void)getValue:(CDVInvokedUrlCommand *)command {

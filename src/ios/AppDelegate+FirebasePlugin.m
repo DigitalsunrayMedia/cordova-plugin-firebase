@@ -53,7 +53,7 @@
         if ( application.applicationState == UIApplicationStateInactive || application.applicationState == UIApplicationStateBackground  )
         {
             //opened from a push notification when the app was on background
-            FirebasePlugin.hasUserTappedOnNotification = YES;
+            FirebasePlugin.firebasePlugin.hasUserTappedOnNotification = YES;
         }
     }else{
         NSLog(@"app did not recieve notification");
@@ -82,7 +82,7 @@
     
     // Connect to FCM since connection may have failed when attempted before having a token.
     [self connectToFcm];
-
+    
     [FirebasePlugin.firebasePlugin sendToken:refreshedToken];
 }
 
@@ -103,7 +103,7 @@
     if ( application.applicationState == UIApplicationStateInactive || application.applicationState == UIApplicationStateBackground  )
     {
         //opened from a push notification when the app was on background
-        FirebasePlugin.hasUserTappedOnNotification = YES;
+        FirebasePlugin.firebasePlugin.hasUserTappedOnNotification = YES;
     }
     
     NSDictionary *mutableUserInfo = [userInfo mutableCopy];
@@ -117,15 +117,15 @@
 }
 
 - (void)application:(UIApplication *)application didReceiveRemoteNotification:(NSDictionary *)userInfo
-    fetchCompletionHandler:(void (^)(UIBackgroundFetchResult))completionHandler {
+fetchCompletionHandler:(void (^)(UIBackgroundFetchResult))completionHandler {
     
     // https://stackoverflow.com/a/16393957
     if ( application.applicationState == UIApplicationStateInactive || application.applicationState == UIApplicationStateBackground  )
     {
         //opened from a push notification when the app was on background
-        FirebasePlugin.hasUserTappedOnNotification = YES;
+        FirebasePlugin.firebasePlugin.hasUserTappedOnNotification = YES;
     }
-
+    
     NSDictionary *mutableUserInfo = [userInfo mutableCopy];
     
     [mutableUserInfo setValue:self.applicationInBackground forKey:@"tap"];
