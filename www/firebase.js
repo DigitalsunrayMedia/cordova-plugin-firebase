@@ -9,7 +9,13 @@ exports.getToken = function(success, error) {
 };
 
 exports.hasUserTappedOnNotification = function(success, error) {
-    exec(success, error, "FirebasePlugin", "hasUserTappedOnNotification", []);
+    exec(function(res) {
+        if(typeof res === 'string') {
+            success(JSON.parse(res));
+        } else {
+            success(res);
+        }
+    }, error, "FirebasePlugin", "hasUserTappedOnNotification", []);
 };
 
 exports.onNotificationOpen = function(success, error) {
