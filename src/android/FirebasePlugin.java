@@ -42,7 +42,6 @@ public class FirebasePlugin extends CordovaPlugin {
     protected static final String KEY = "badge";
 
     private static boolean inBackground = true;
-    private static boolean wasTapped = false;
     private static ArrayList<Bundle> notificationStack = null;
     private static CallbackContext notificationCallbackContext;
     private static CallbackContext tokenRefreshCallbackContext;
@@ -56,7 +55,6 @@ public class FirebasePlugin extends CordovaPlugin {
                 Log.d(TAG, "Starting Firebase plugin");
                 mFirebaseAnalytics = FirebaseAnalytics.getInstance(context);
                 if(extras != null && extras.size() > 1) {
-                    wasTapped = extras.getBoolean("tap", false);
 
                     if (FirebasePlugin.notificationStack == null) {
                         FirebasePlugin.notificationStack = new ArrayList<Bundle>();
@@ -519,8 +517,13 @@ public class FirebasePlugin extends CordovaPlugin {
         });
     }
 
-    private void hasUserTappedOnNotification(final CallbackContext callbackContext) {
+    private void hasUserTappedOnNotification(CallbackContext callbackContext) {
         try {
+            boolean wasTapped = false;
+            Bundle extras = this.cordova.getActivity().getIntent().getExtras();
+            if(extras != null)
+                wasTapped = extras.getBoolean("tap", false);
+
             JSONObject jsonObject = new JSONObject();
             jsonObject.put("has_user_tapped_on_notification", wasTapped);
 
