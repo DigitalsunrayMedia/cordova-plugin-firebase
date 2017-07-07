@@ -29,14 +29,9 @@
       <file leaf-file-name="FirebasePlugin.java" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/src/android/FirebasePlugin.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="-7854">
-              <caret line="54" column="29" selection-start-line="54" selection-start-column="29" selection-end-line="54" selection-end-column="29" />
-              <folding>
-                <element signature="e#6051#6052#0" expanded="false" />
-                <element signature="e#6101#6102#0" expanded="false" />
-                <element signature="e#6165#6166#0" expanded="false" />
-                <element signature="e#6216#6217#0" expanded="false" />
-              </folding>
+            <state relative-caret-position="357">
+              <caret line="53" column="47" selection-start-line="53" selection-start-column="47" selection-end-line="53" selection-end-column="47" />
+              <folding />
             </state>
           </provider>
         </entry>
@@ -290,14 +285,9 @@
   <component name="editorHistoryManager">
     <entry file="file://$PROJECT_DIR$/src/android/FirebasePlugin.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-7854">
-          <caret line="54" column="29" selection-start-line="54" selection-start-column="29" selection-end-line="54" selection-end-column="29" />
-          <folding>
-            <element signature="e#6051#6052#0" expanded="false" />
-            <element signature="e#6101#6102#0" expanded="false" />
-            <element signature="e#6165#6166#0" expanded="false" />
-            <element signature="e#6216#6217#0" expanded="false" />
-          </folding>
+        <state relative-caret-position="357">
+          <caret line="53" column="47" selection-start-line="53" selection-start-column="47" selection-end-line="53" selection-end-column="47" />
+          <folding />
         </state>
       </provider>
     </entry>

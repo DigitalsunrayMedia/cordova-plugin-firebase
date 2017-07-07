@@ -51,7 +51,7 @@ public class FirebasePlugin extends CordovaPlugin {
     protected void pluginInitialize() {
         final Context context = this.cordova.getActivity().getApplicationContext();
         final Bundle extras = this.cordova.getActivity().getIntent().getExtras();
-        if(extras != null && extras.size() > 1) {
+        if(extras != null && extras.size() > 1)
             wasTapped = true;
 
         this.cordova.getThreadPool().execute(new Runnable() {
