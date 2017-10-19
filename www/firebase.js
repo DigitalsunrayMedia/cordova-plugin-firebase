@@ -1,4 +1,7 @@
 var exec = require('cordova/exec');
+exports.getVerificationID = function(number, success, error) {
+    exec(success, error, "FirebasePlugin", "getVerificationID", [number]);
+};
 
 exports.getInstanceId = function(success, error) {
     exec(success, error, "FirebasePlugin", "getInstanceId", []);
@@ -50,8 +53,16 @@ exports.unsubscribe = function(topic, success, error) {
     exec(success, error, "FirebasePlugin", "unsubscribe", [topic]);
 };
 
+exports.unregister = function(success, error) {
+    exec(success, error, "FirebasePlugin", "unregister", []);
+};
+
 exports.logEvent = function(name, params, success, error) {
     exec(success, error, "FirebasePlugin", "logEvent", [name, params]);
+};
+
+exports.logError = function(message, success, error) {
+    exec(success, error, "FirebasePlugin", "logError", [message]);
 };
 
 exports.setScreenName = function(name, success, error) {
@@ -120,4 +131,8 @@ exports.setDefaults = function (defaults, namespace, success, error) {
         success = namespace;
     }
     exec(success, error, "FirebasePlugin", "setDefaults", args);
+};
+
+exports.verifyPhoneNumber = function(number, timeOutDuration, success, error) {
+    exec(success, error, "FirebasePlugin", "verifyPhoneNumber", [number, timeOutDuration]);
 };
