@@ -3,7 +3,6 @@
 
 @interface FirebasePlugin : CDVPlugin
 + (FirebasePlugin *) firebasePlugin;
-- (void)getVerificationID:(CDVInvokedUrlCommand*)command;
 - (void)getInstanceId:(CDVInvokedUrlCommand*)command;
 - (void)getToken:(CDVInvokedUrlCommand*)command;
 - (void)hasUserTappedOnNotification:(CDVInvokedUrlCommand*)command;
@@ -25,9 +24,13 @@
 - (void)fetch:(CDVInvokedUrlCommand*)command;
 - (void)activateFetched:(CDVInvokedUrlCommand*)command;
 - (void)getValue:(CDVInvokedUrlCommand*)command;
+- (void)startTrace:(CDVInvokedUrlCommand*)command;
+- (void)incrementCounter:(CDVInvokedUrlCommand*)command;
+- (void)stopTrace:(CDVInvokedUrlCommand*)command;
 @property (nonatomic, copy) NSString *notificationCallbackId;
 @property (nonatomic, copy) NSString *tokenRefreshCallbackId;
 @property (nonatomic, retain) NSMutableArray *notificationStack;
 @property (nonatomic, assign) BOOL hasUserTappedOnNotification;
+@property (nonatomic, readwrite) NSMutableDictionary* traces;
 
 @end
