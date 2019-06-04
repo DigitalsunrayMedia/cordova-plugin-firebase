@@ -136,6 +136,8 @@
 - (void)application:(UIApplication *)application didRegisterForRemoteNotificationsWithDeviceToken:(NSData *)deviceToken {
     [FIRMessaging messaging].APNSToken = deviceToken;
     NSLog(@"deviceToken1 = %@", deviceToken);
+    NSLog(@"DSR: didRegisterForRemoteNotificationsWithDeviceToken");
+    [[NSNotificationCenter defaultCenter] postNotificationName:@"registerForRemoteNotifications_OK" object:nil userInfo:nil];
 }
 
 - (void)application:(UIApplication *)application didReceiveRemoteNotification:(NSDictionary *)userInfo {
@@ -187,7 +189,9 @@ fetchCompletionHandler:(void (^)(UIBackgroundFetchResult))completionHandler {
 }
 
 - (void)application:(UIApplication *)application didFailToRegisterForRemoteNotificationsWithError:(NSError *)error {
-  NSLog(@"Unable to register for remote notifications: %@", error);
+    NSLog(@"Unable to register for remote notifications: %@", error);
+    NSLog(@"DSR: didFailToRegisterForRemoteNotificationsWithError");
+    [[NSNotificationCenter defaultCenter] postNotificationName:@"registerForRemoteNotifications_ERROR" object:nil userInfo:nil];
 }
 
 // [END ios_10_data_message]
@@ -244,15 +248,4 @@ fetchCompletionHandler:(void (^)(UIBackgroundFetchResult))completionHandler {
 }
 #endif
 
-- (void)application:(UIApplication *)application didRegisterForRemoteNotificationsWithDeviceToken:(NSData *)deviceToken
-{
-    NSLog(@"DSR: didRegisterForRemoteNotificationsWithDeviceToken");
-    [[NSNotificationCenter defaultCenter] postNotificationName:@"registerForRemoteNotifications_OK" object:nil userInfo:nil];
-}
-
--(void)application:(UIApplication *)application didFailToRegisterForRemoteNotificationsWithError:(NSError *)error
-{
-    NSLog(@"DSR: didFailToRegisterForRemoteNotificationsWithError");
-    [[NSNotificationCenter defaultCenter] postNotificationName:@"registerForRemoteNotifications_ERROR" object:nil userInfo:nil];
-}
 @end
