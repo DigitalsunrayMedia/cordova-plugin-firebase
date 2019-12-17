@@ -25,6 +25,7 @@
 @synthesize hasUserTappedOnNotification;
 @synthesize traces;
 
+static NSString*const LOG_TAG = @"FirebasePlugin[native]";
 static NSInteger const kNotificationStackSize = 10;
 static FirebasePlugin *firebasePlugin;
 static BOOL registeredForRemoteNotifications = NO;
@@ -102,12 +103,6 @@ static BOOL registeredForRemoteNotifications = NO;
 
     CDVPluginResult *pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_ERROR];
     [self.commandDelegate sendPluginResult:pluginResult callbackId:self.grantPermissionCommand.callbackId];
-}
-
-// DEPRECATED - alias of getToken
-- (void)getInstanceId:(CDVInvokedUrlCommand *)command {
-    CDVPluginResult *pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK messageAsString:[[FIRInstanceID instanceID] token]];
-    [self.commandDelegate sendPluginResult:pluginResult callbackId:command.callbackId];
 }
 
 - (void)getAPNSToken:(CDVInvokedUrlCommand *)command {
@@ -283,17 +278,6 @@ static BOOL registeredForRemoteNotifications = NO;
         }@catch (NSException *exception) {
             [self handlePluginExceptionWithContext:exception :command];
         }
-}
-
-- (void)setBadgeNumber:(CDVInvokedUrlCommand *)command {
-    int number = [[command.arguments objectAtIndex:0] intValue];
-
-    [self.commandDelegate runInBackground:^{
-        [[UIApplication sharedApplication] setApplicationIconBadgeNumber:number];
-
-        CDVPluginResult *pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK];
-        [self.commandDelegate sendPluginResult:pluginResult callbackId:command.callbackId];
-    }];
 }
 
 - (void)getVerificationID:(CDVInvokedUrlCommand *)command {
